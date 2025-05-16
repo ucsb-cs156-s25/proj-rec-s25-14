@@ -218,9 +218,8 @@ import lombok.extern.slf4j.Slf4j;
 <span class="fc" id="L218">        recommendationRequest.setRequester(currentUser.getUser());</span>
 <span class="fc" id="L219">        recommendationRequest.setStatus(&quot;PENDING&quot;);</span>
 <span class="fc" id="L220">        recommendationRequest.setDueDate(dueDate);</span>
-<span class="fc" id="L221">        recommendationRequest.setCompletionDate(null);</span>
-<span class="fc" id="L222">        RecommendationRequest savedRecommendationRequest = recommendationRequestRepository.save(recommendationRequest);</span>
-<span class="fc" id="L223">        return savedRecommendationRequest;</span>
+<span class="fc" id="L221">        RecommendationRequest savedRecommendationRequest = recommendationRequestRepository.save(recommendationRequest);</span>
+<span class="fc" id="L222">        return savedRecommendationRequest;</span>
     }
 
     /**
@@ -232,10 +231,10 @@ import lombok.extern.slf4j.Slf4j;
     @PreAuthorize(&quot;hasRole('ROLE_PROFESSOR')&quot;)
     public Iterable&lt;RecommendationRequest&gt; getRecommendationRequestByStatusForProfessor(
         @RequestParam String status) {
-<span class="fc" id="L235">        User currentUser = getCurrentUser().getUser();</span>
+<span class="fc" id="L234">        User currentUser = getCurrentUser().getUser();</span>
 
-<span class="fc" id="L237">        return recommendationRequestRepository.findAllByProfessorIdAndStatus(</span>
-<span class="fc" id="L238">            currentUser.getId(), status);</span>
+<span class="fc" id="L236">        return recommendationRequestRepository.findAllByProfessorIdAndStatus(</span>
+<span class="fc" id="L237">            currentUser.getId(), status);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
