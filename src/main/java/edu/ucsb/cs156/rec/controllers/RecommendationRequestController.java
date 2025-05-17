@@ -131,6 +131,7 @@ public class RecommendationRequestController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
 
         recommendationRequest.setStatus(incoming.getStatus());
+        recommendationRequest.setCompletionDate(LocalDateTime.now());
 
         recommendationRequestRepository.save(recommendationRequest);
 
@@ -216,7 +217,6 @@ public class RecommendationRequestController extends ApiController {
         recommendationRequest.setRequester(currentUser.getUser());
         recommendationRequest.setStatus("PENDING");
         recommendationRequest.setDueDate(dueDate);
-
         RecommendationRequest savedRecommendationRequest = recommendationRequestRepository.save(recommendationRequest);
         return savedRecommendationRequest;
     }

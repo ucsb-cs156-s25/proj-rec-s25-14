@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -71,7 +73,6 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
                 .recommendationType("PhDprogram")
                 .details("details")
                 .status("PENDING")
-                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
                 .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
                 .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
                 .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
@@ -483,28 +484,16 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
                 .recommendationType("PhDprogram")
                 .details("details")
                 .status("COMPLETED")
-                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
-                .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
-                .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
-                .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
-                .build();
-        RecommendationRequest rec_corrected = RecommendationRequest.builder()
-                .id(67L)
-                .requester(student)
-                .professor(prof)
-                .recommendationType("PhDprogram")
-                .details("details")
-                .status("COMPLETED")
-                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00")) // temp date
                 .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
                 .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
                 .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
                 .build();
 
         String requestBody = mapper.writeValueAsString(rec_updated);
-        String expectedJson = mapper.writeValueAsString(rec_corrected);
 
-        when(recommendationRequestRepository.findById(eq(67L))).thenReturn(Optional.of(rec)); 
+        when(recommendationRequestRepository.findById(eq(67L))).thenReturn(Optional.of(rec));
+        when(recommendationRequestRepository.save(any(RecommendationRequest.class))).thenReturn(rec_updated);
 
         //act
         MvcResult response = mockMvc
@@ -518,10 +507,22 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
 
         //assert
         verify(recommendationRequestRepository, times(1)).findById(67L);
-        verify(recommendationRequestRepository, times(1)).save(rec_corrected);
+        verify(recommendationRequestRepository, times(1)).save(any(RecommendationRequest.class));
 
         String responseString = response.getResponse().getContentAsString();
-        assertEquals(expectedJson, responseString);
+        RecommendationRequest savedRequest = mapper.readValue(responseString, RecommendationRequest.class);
+        
+        // check that status was updated
+        assertEquals("COMPLETED", savedRequest.getStatus());
+        
+        // check that completion date was set
+        assertNotNull(savedRequest.getCompletionDate());
+        
+        // check that completion date is recent
+        // REFERENCE: chatgpt for figuring out how to do this
+        LocalDateTime now = LocalDateTime.now();
+        assertTrue(savedRequest.getCompletionDate().isAfter(now.minusSeconds(5)));
+        assertTrue(savedRequest.getCompletionDate().isBefore(now.plusSeconds(5)));
     }
 
     //prof can not edit a Recommendation Request that dne
