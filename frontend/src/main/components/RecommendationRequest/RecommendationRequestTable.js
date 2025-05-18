@@ -5,6 +5,8 @@ import { useBackendMutation } from "main/utils/useBackend";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
+  cellToAxiosParamsUpdateStatus,
+  onStatusUpdateSuccess,
 } from "main/utils/RecommendationRequestUtils";
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
@@ -28,11 +30,34 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     { onSuccess: onDeleteSuccess },
     [apiEndpoint],
   );
+
+  // when status updates, mutate 
+  const statusUpdateMutation = useBackendMutation(
+    (cell, newStatus) => cellToAxiosParamsUpdateStatus(cell, newStatus),
+    { onSuccess: onStatusUpdateSuccess },
+    [apiEndpoint],
+  );
+
   // Stryker restore all
 
   // Stryker disable next-line all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
     deleteMutation.mutate(cell);
+  };
+
+
+  // ADDING NEW STATTUS BUTTONS FOR PROFESSORS: Accept and Deny (for PENDING requests), 
+  // and Completed (for ACCEPTED requests)
+  const acceptCallback = async (cell) => {
+    statusUpdateMutation.mutate(cell, "ACCEPTED");
+  };
+
+  const denyCallback = async (cell) => {
+    statusUpdateMutation.mutate(cell, "DENIED");
+  };
+
+  const completeCallback = async (cell) => {
+    statusUpdateMutation.mutate(cell, "COMPLETED");
   };
 
   const columns = [
@@ -67,6 +92,10 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Status",
       accessor: "status",
+    },
+    {
+      Header: "Date Accepted/Denied",
+      accessor: "dateAcceptedOrDenied",
     },
     {
       Header: "Submission Date",
@@ -108,6 +137,32 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
         "primary",
         editCallback,
         "RecommendationRequestTable",
+      ),
+    );
+  }
+
+  if (hasRole(currentUser, "ROLE_PROFESSOR")) {
+    columns.push(
+      ButtonColumn(
+        "Accept",
+        "success",
+        acceptCallback,
+        "RecommendationRequestTable",
+        (cell) => cell.row.values.status === "PENDING"
+      ),
+      ButtonColumn(
+        "Deny",
+        "danger",
+        denyCallback,
+        "RecommendationRequestTable",
+        (cell) => cell.row.values.status === "PENDING"
+      ),
+      ButtonColumn(
+        "Check when Completed",
+        "primary",
+        completeCallback,
+        "RecommendationRequestTable",
+        (cell) => cell.row.values.status === "ACCEPTED"
       ),
     );
   }
