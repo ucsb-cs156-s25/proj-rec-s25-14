@@ -1,7 +1,7 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
 import RecommendationRequestTable from "main/components/RecommendationRequest/RecommendationRequestTable";
-import { hasRole, useCurrentUser } from "main/utils/currentUser";
+import { useCurrentUser } from "main/utils/currentUser";
 
 export default function PendingRequestsPage() {
   const { data: currentUser } = useCurrentUser();
