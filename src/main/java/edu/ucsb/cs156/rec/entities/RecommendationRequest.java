@@ -47,6 +47,7 @@ public class RecommendationRequest {
 
   private LocalDateTime completionDate;
   private LocalDateTime dueDate;
+  private LocalDateTime dateAcceptedOrDenied;
   @CreatedDate
   private LocalDateTime submissionDate;
   @LastModifiedDate

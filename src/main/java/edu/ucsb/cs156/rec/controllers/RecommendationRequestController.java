@@ -130,11 +130,20 @@ public class RecommendationRequestController extends ApiController {
                 .findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
 
+        // when professor updates status
         recommendationRequest.setStatus(incoming.getStatus());
+        recommendationRequest.setDetails(incoming.getDetails());
 
-        recommendationRequestRepository.save(recommendationRequest);
+        // set the date when professor accepts or denies
+        if (incoming.getStatus().equals("ACCEPTED") || incoming.getStatus().equals("DENIED")) {
+            recommendationRequest.setDateAcceptedOrDenied(LocalDateTime.now());
+        }
+        if (incoming.getStatus().equals("COMPLETED")) {
+            recommendationRequest.setCompletionDate(LocalDateTime.now());
+        }
 
-        return recommendationRequest;
+        RecommendationRequest savedRequest = recommendationRequestRepository.save(recommendationRequest);
+        return savedRequest;
     }
 
     /**
@@ -234,5 +243,17 @@ public class RecommendationRequestController extends ApiController {
 
         return recommendationRequestRepository.findAllByProfessorIdAndStatus(
             currentUser.getId(), status);
+    }
+
+    /**
+     * This method returns a list of PENDING recommendation requests of the current professor.
+     * @return a list of PENDING recommendation requests of the current professor
+     */
+    @Operation(summary = "Get all PENDING recommendation requests of the current professor")
+    @PreAuthorize("hasRole('ROLE_PROFESSOR')")
+    @GetMapping("/requests/pending")
+    public Iterable<RecommendationRequest> getPendingRecommendationRequests() {
+        User currentUser = getCurrentUser().getUser();
+        return recommendationRequestRepository.findAllByProfessorIdAndStatus(currentUser.getId(), "PENDING");
     }
 }

@@ -89,6 +89,12 @@
                   },
                   {
                     "column": {
+                      "name": "DATE_ACCEPTED_OR_DENIED",
+                      "type": "TIMESTAMP"
+                    }
+                  },
+                  {
+                    "column": {
                       "name": "DUE_DATE",
                       "type": "TIMESTAMP"
                     }
