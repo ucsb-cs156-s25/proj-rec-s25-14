@@ -807,4 +807,60 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
         assertNull(savedRequest.getDateAcceptedOrDenied());
         assertNull(savedRequest.getCompletionDate());
     }
+
+    @WithMockUser(roles = {"PROFESSOR"})
+    @Test
+    public void prof_can_deny_request_and_sets_date() throws Exception {
+        
+        // arrange
+        User prof = currentUserService.getCurrentUser().getUser();
+        User student = User.builder().id(99).build();
+
+        RecommendationRequest rec = RecommendationRequest.builder()
+            .id(1L)
+            .requester(student)
+            .professor(prof)
+            .recommendationType("PhDprogram")
+            .details("test details")
+            .status("PENDING")
+            .build();
+
+        RecommendationRequest rec_updated = RecommendationRequest.builder()
+            .id(1L)
+            .requester(student)
+            .professor(prof)
+            .recommendationType("PhDprogram")
+            .details("test details")
+            .status("DENIED")
+            .build();
+
+        when(recommendationRequestRepository.findById(eq(1L))).thenReturn(Optional.of(rec));
+
+        when(recommendationRequestRepository.save(any(RecommendationRequest.class))).thenAnswer(new Answer<RecommendationRequest>() {
+            @Override
+            public RecommendationRequest answer(InvocationOnMock invocation) throws Throwable {
+                RecommendationRequest saved = (RecommendationRequest) invocation.getArguments()[0];
+                return saved;
+            }
+        });
+
+        // act
+        MvcResult response = mockMvc.perform(put("/api/recommendationrequest/professor?id=1")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(rec_updated))
+            .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        // assert
+        verify(recommendationRequestRepository, times(1)).findById(1L);
+        verify(recommendationRequestRepository, times(1)).save(any(RecommendationRequest.class));
+
+        String responseString = response.getResponse().getContentAsString();
+        RecommendationRequest savedRequest = mapper.readValue(responseString, RecommendationRequest.class);
+        
+        assertEquals("DENIED", savedRequest.getStatus());
+        assertNotNull(savedRequest.getDateAcceptedOrDenied());
+        assertNotNull(savedRequest.getCompletionDate());
+    }
 }
