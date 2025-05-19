@@ -2,11 +2,14 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
 import RecommendationRequestTable from "main/components/RecommendationRequest/RecommendationRequestTable";
 import { useCurrentUser } from "main/utils/currentUser";
+import { hasRole } from "main/utils/currentUser";
 
 export default function PendingRequestsPage() {
   const { data: currentUser } = useCurrentUser();
 
-  const apiEndpoint = "/api/recommendationrequest/professor/pending";
+  const apiEndpoint = hasRole(currentUser, "ROLE_PROFESSOR")
+    ? "/api/recommendationrequest/professor/all"
+    : "/api/recommendationrequest/requester/all";
 
   const {
     data: requests,

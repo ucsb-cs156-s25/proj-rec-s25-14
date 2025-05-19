@@ -15,22 +15,19 @@ export function cellToAxiosParamsDelete(cell) {
   };
 }
 
-export function onStatusUpdateSuccess(message) {
-  console.log(message);
-  toast(message);
-}
-
 // for updating status of recommendation request
-export function cellToAxiosParamsUpdateStatus(cell, newStatus) {
-  return {
+export function cellToAxiosParamsUpdateStatus({ cell, newStatus }) {
+  const params = {
     url: "/api/recommendationrequest/professor",
     method: "PUT",
     params: {
       id: cell.row.values.id,
     },
     data: {
-      ...cell.row.original,
-      status: newStatus
+      status: newStatus,
+      details: cell.row.values.details || ""
     }
   };
+
+  return params;
 }

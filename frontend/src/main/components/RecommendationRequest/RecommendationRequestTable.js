@@ -6,7 +6,6 @@ import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
   cellToAxiosParamsUpdateStatus,
-  onStatusUpdateSuccess,
 } from "main/utils/RecommendationRequestUtils";
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
@@ -33,8 +32,7 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
 
   // when status updates, mutate 
   const statusUpdateMutation = useBackendMutation(
-    (cell, newStatus) => cellToAxiosParamsUpdateStatus(cell, newStatus),
-    { onSuccess: onStatusUpdateSuccess },
+    cellToAxiosParamsUpdateStatus,
     [apiEndpoint],
   );
 
@@ -49,15 +47,15 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
   // ADDING NEW STATTUS BUTTONS FOR PROFESSORS: Accept and Deny (for PENDING requests), 
   // and Completed (for ACCEPTED requests)
   const acceptCallback = async (cell) => {
-    statusUpdateMutation.mutate(cell, "ACCEPTED");
+    statusUpdateMutation.mutate({ cell, newStatus: "ACCEPTED" });
   };
 
   const denyCallback = async (cell) => {
-    statusUpdateMutation.mutate(cell, "DENIED");
+    statusUpdateMutation.mutate({ cell, newStatus: "DENIED" });
   };
 
   const completeCallback = async (cell) => {
-    statusUpdateMutation.mutate(cell, "COMPLETED");
+    statusUpdateMutation.mutate({ cell, newStatus: "COMPLETED" });
   };
 
   const columns = [
@@ -92,10 +90,6 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Status",
       accessor: "status",
-    },
-    {
-      Header: "Date Accepted/Denied",
-      accessor: "dateAcceptedOrDenied",
     },
     {
       Header: "Submission Date",
@@ -158,7 +152,7 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
         (cell) => cell.row.values.status === "PENDING"
       ),
       ButtonColumn(
-        "Check when Completed",
+        "Completed",
         "primary",
         completeCallback,
         "RecommendationRequestTable",
