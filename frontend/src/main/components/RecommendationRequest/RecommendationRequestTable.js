@@ -48,14 +48,17 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
   // and Completed (for ACCEPTED requests)
   const acceptCallback = async (cell) => {
     statusUpdateMutation.mutate({ cell, newStatus: "ACCEPTED" });
+    window.location.reload(); // refresh the page
   };
 
   const denyCallback = async (cell) => {
     statusUpdateMutation.mutate({ cell, newStatus: "DENIED" });
+    window.location.reload();
   };
 
   const completeCallback = async (cell) => {
     statusUpdateMutation.mutate({ cell, newStatus: "COMPLETED" });
+    window.location.reload();
   };
 
   const columns = [
@@ -156,7 +159,6 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
         "primary",
         completeCallback,
         "RecommendationRequestTable",
-        (cell) => cell.row.values.status === "ACCEPTED"
       ),
     );
   }
