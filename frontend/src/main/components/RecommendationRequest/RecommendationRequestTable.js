@@ -10,6 +10,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString();
+}
+
 export default function RecommendationRequestTable({ requests, currentUser }) {
   const navigate = useNavigate();
 
@@ -97,18 +101,34 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Submission Date",
       accessor: "submissionDate",
+      // turn into readable format mm/dd/yyyy
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
     {
       Header: "Last Modified Date",
       accessor: "lastModifiedDate",
+      // turn into readable format mm/dd/yyyy
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
     {
       Header: "Completion Date",
       accessor: "completionDate",
+      // turn into readable format mm/dd/yyyy
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
     {
       Header: "Due Date",
       accessor: "dueDate",
+      // turn into readable format mm/dd/yyyy
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
   ];
 
@@ -139,31 +159,42 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
   }
 
   if (hasRole(currentUser, "ROLE_PROFESSOR")) {
-    columns.push(
-      ButtonColumn(
-        "Accept",
-        "success",
-        acceptCallback,
-        "RecommendationRequestTable",
-        (cell) => cell.row.values.status === "PENDING"
-      ),
-      ButtonColumn(
-        "Deny",
-        "danger",
-        denyCallback,
-        "RecommendationRequestTable",
-        (cell) => cell.row.values.status === "PENDING"
-      ),
-      ButtonColumn(
-        "Completed",
-        "primary",
-        completeCallback,
-        "RecommendationRequestTable",
-      ),
-    );
+    // if status = PENDING, show Accept and Deny buttons
+    if ((cell) => cell.row.values.status === "PENDING") {
+      columns.push(
+        ButtonColumn(
+          "Accept",
+          "success",
+          acceptCallback,
+          "RecommendationRequestTable",
+          ),
+          ButtonColumn(
+            "Deny",
+            "danger",
+            denyCallback,
+            "RecommendationRequestTable",
+          )
+      )
+    }
+    else if ((cell) => cell.row.values.status === "ACCEPTED") {
+      columns.push(
+        ButtonColumn(
+          "Completed",
+          "primary",
+          completeCallback,
+          "RecommendationRequestTable",
+        ),
+        ButtonColumn(
+          "Deny",
+          "danger",
+          denyCallback,
+          "RecommendationRequestTable",
+        )
+      );
+    }
   }
 
-  return (
+    return (
     <OurTable
       data={requests}
       columns={columns}
