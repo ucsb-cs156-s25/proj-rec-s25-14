@@ -240,5 +240,17 @@ import lombok.extern.slf4j.Slf4j;
 <span class="fc" id="L240">        return recommendationRequestRepository.findAllByProfessorIdAndStatus(</span>
 <span class="fc" id="L241">            currentUser.getId(), status);</span>
     }
+
+    /**
+     * This methods return a list of all the recommendation requests for the admin.
+     * @return a list of all the recommendation requests.
+     */
+    @Operation(summary = &quot;Get all recommendation requests for the admin&quot;)
+    @GetMapping(&quot;/admin/all&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    public Iterable&lt;RecommendationRequest&gt; getAllRecoomendationRequest(){
+<span class="fc" id="L252">        return recommendationRequestRepository.findAll();</span>
+    }
+    
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
