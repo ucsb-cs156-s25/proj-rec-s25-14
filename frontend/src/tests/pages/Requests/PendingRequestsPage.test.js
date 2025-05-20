@@ -8,10 +8,10 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { recommendationRequestFixtures } from "fixtures/recommendationRequestFixtures";
 
-describe("PendingRequestsPage tests", () => {
-  const axiosMock = new AxiosMockAdapter(axios);
-  const queryClient = new QueryClient();
+const axiosMock = new AxiosMockAdapter(axios);
+const queryClient = new QueryClient();
 
+describe("PendingRequestsPage tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
