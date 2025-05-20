@@ -128,9 +128,6 @@ public class SecurityConfig {
             mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_PROFESSOR"));
           }
 
-          if(getStudent(email)){
-            mappedAuthorities.add(new SimpleGrantedAuthority("ROLE_STUDENT"));
-          }
         }
 
       });
