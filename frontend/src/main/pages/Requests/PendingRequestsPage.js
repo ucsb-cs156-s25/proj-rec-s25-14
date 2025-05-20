@@ -27,9 +27,9 @@ export default function PendingRequestsPage() {
   );
 
   // filter requests such that only status = PENDING or ACCEPTED records are shown
-  const pendingRequests = requests?.filter(
-    (request) => request.status === "PENDING" || request.status === "ACCEPTED",
-  ) || [];
+  const pendingRequests = requests.filter(
+    (request) => request.status === "PENDING" || request.status === "ACCEPTED"
+  );
 
   return (
     <BasicLayout>
