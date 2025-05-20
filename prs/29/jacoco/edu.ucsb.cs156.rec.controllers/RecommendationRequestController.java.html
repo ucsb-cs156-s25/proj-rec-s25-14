@@ -139,7 +139,7 @@ import lombok.extern.slf4j.Slf4j;
 <span class="fc" id="L139">            recommendationRequest.setCompletionDate(null);</span>
         }
         else {
-<span class="fc" id="L142">            throw new EntityNotFoundException(RecommendationRequest.class, id);</span>
+<span class="fc" id="L142">            throw new IllegalArgumentException(String.format(&quot;Unknown Request Status: %s&quot;, incoming.getStatus()));</span>
         }
 
 <span class="fc" id="L145">        recommendationRequestRepository.save(recommendationRequest);</span>
