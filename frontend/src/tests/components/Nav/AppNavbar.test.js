@@ -195,8 +195,8 @@ describe("AppNavbar tests", () => {
     expect(settingsLink).toBeInTheDocument();
   });
 
-  test("renders the three prof pages correctly for student users", async () => {
-    const currentUser = currentUserFixtures.studentUser;
+  test("renders the three prof pages correctly for users", async () => {
+    const currentUser = currentUserFixtures.userOnly;
     const systemInfo = systemInfoFixtures.showingBoth;
     const doLogin = jest.fn();
 
@@ -223,29 +223,6 @@ describe("AppNavbar tests", () => {
     await screen.findByText("Statistics");
     const statisticsLink = screen.getByText("Statistics");
     expect(statisticsLink).toBeInTheDocument();
-  });
-
-  test("the three prof pages do not show for normal users", async () => {
-    const currentUser = currentUserFixtures.userOnly;
-    const systemInfo = systemInfoFixtures.showingBoth;
-    const doLogin = jest.fn();
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AppNavbar
-            currentUser={currentUser}
-            systemInfo={systemInfo}
-            doLogin={doLogin}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(screen.queryByText("Pending Requests")).not.toBeInTheDocument();
-    expect(screen.queryByText("Completed Requests")).not.toBeInTheDocument();
-    expect(screen.queryByText("Statistics")).not.toBeInTheDocument();
-    expect(screen.queryByText("Settings")).not.toBeInTheDocument();
   });
 
   test("the three prof pages do not show when not logged in", async () => {

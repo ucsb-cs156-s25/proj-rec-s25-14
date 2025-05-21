@@ -243,18 +243,6 @@ const currentUserFixtures = {
       ],
     },
   },
-  studentUser: {
-    loggedIn: true,
-    root: {
-      ...apiCurrentUserFixtures.studentUser,
-      rolesList: [
-        "SCOPE_openid",
-        "ROLE_USER",
-        "SCOPE_https://www.googleapis.com/auth/userinfo.profile",
-        "SCOPE_https://www.googleapis.com/auth/userinfo.email",
-      ],
-    },
-  },
 };
 
 export { currentUserFixtures, apiCurrentUserFixtures };
