@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import usersFixtures from "fixtures/usersFixtures";
-import recommendationTypeFixtures from "fixtures/recommendationTypeFixtures";
+import { recommendationTypeFixtures } from "fixtures/recommendationTypeFixtures";
 
 const mockedNavigate = jest.fn();
 

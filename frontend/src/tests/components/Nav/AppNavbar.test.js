@@ -39,6 +39,10 @@ describe("AppNavbar tests", () => {
     await screen.findByText("Welcome, phtcon@ucsb.edu");
     const adminMenu = screen.getByTestId("appnavbar-admin-dropdown");
     expect(adminMenu).toBeInTheDocument();
+
+    const recManager = screen.getByText("Rec Manager");
+    expect(recManager).toBeInTheDocument();
+
     const settings = screen.getByText("Settings");
     expect(settings).toBeInTheDocument();
   });
@@ -245,6 +249,9 @@ describe("AppNavbar tests", () => {
     expect(screen.queryByText("Pending Requests")).not.toBeInTheDocument();
     expect(screen.queryByText("Completed Requests")).not.toBeInTheDocument();
     expect(screen.queryByText("Statistics")).not.toBeInTheDocument();
+
+    expect(screen.getByText("Rec Manager")).toBeInTheDocument();
+
     expect(screen.queryByText("Settings")).not.toBeInTheDocument();
   });
 
@@ -268,6 +275,9 @@ describe("AppNavbar tests", () => {
     expect(screen.queryByText("Pending Requests")).not.toBeInTheDocument();
     expect(screen.queryByText("Completed Requests")).not.toBeInTheDocument();
     expect(screen.queryByText("Statistics")).not.toBeInTheDocument();
+
+    expect(screen.getByText("Rec Manager")).toBeInTheDocument();
+
     expect(screen.queryByText("Settings")).not.toBeInTheDocument();
   });
 });

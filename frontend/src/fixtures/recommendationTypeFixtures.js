@@ -19,4 +19,4 @@ const recommendationTypeFixtures = {
   ],
 };
 
-export default recommendationTypeFixtures;
+export { recommendationTypeFixtures };
