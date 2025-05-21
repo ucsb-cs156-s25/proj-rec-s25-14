@@ -1,10 +1,11 @@
 import React from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
-
 import { useBackendMutation } from "main/utils/useBackend";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
+  cellToAxiosParamsUpdateStatus,
+  onStatusUpdateSuccess,
 } from "main/utils/RecommendationRequestUtils";
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
@@ -28,11 +29,35 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     { onSuccess: onDeleteSuccess },
     [apiEndpoint],
   );
+  const statusUpdateMutation = useBackendMutation(
+    cellToAxiosParamsUpdateStatus,
+    { onSuccess: onStatusUpdateSuccess },
+    [apiEndpoint],
+  );
+
   // Stryker restore all
 
   // Stryker disable next-line all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
     deleteMutation.mutate(cell);
+  };
+
+  // Stryker disable next-line all : TODO try to make a good test for this
+  const acceptCallBack = async (cell) => {
+    statusUpdateMutation.mutate({ cell, newStatus: "ACCEPTED" });
+    window.location.reload(); // refresh the page to see update
+  };
+
+  // Stryker disable next-line all : TODO try to make a good test for this
+  const denyCallBack = async (cell) => {
+    statusUpdateMutation.mutate({ cell, newStatus: "DENIED" });
+    window.location.reload(); // refresh the page to see update
+  };
+
+  // Stryker disable next-line all : TODO try to make a good test for this
+  const completedCallBack = async (cell) => {
+    statusUpdateMutation.mutate({ cell, newStatus: "COMPLETED" });
+    window.location.reload(); // refresh the page to see update
   };
 
   const columns = [
@@ -108,6 +133,35 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
         "primary",
         editCallback,
         "RecommendationRequestTable",
+      ),
+    );
+  }
+
+  if (hasRole(currentUser, "ROLE_PROFESSOR")) {
+    columns.push(
+      ButtonColumn(
+        "Accept",
+        "success",
+        acceptCallBack,
+        "RecommendationRequestTable",
+        // stryker disable next-line all : professor can only accept pending requests
+        (cell) => cell.row.values.status === "PENDING",
+      ),
+      ButtonColumn(
+        "Deny",
+        "success",
+        denyCallBack,
+        "RecommendationRequestTable",
+        // stryker disable next-line all : professor can only deny pending requests
+        (cell) => cell.row.values.status === "PENDING",
+      ),
+      ButtonColumn(
+        "Complete",
+        "success",
+        completedCallBack,
+        "RecommendationRequestTable",
+        // stryker disable next-line all : professor can only complete accepted requests
+        (cell) => cell.row.values.status === "ACCEPTED",
       ),
     );
   }
