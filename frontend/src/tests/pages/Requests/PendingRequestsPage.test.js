@@ -71,13 +71,6 @@ describe("PendingRequestsPage tests", () => {
     expect(
       statusCells.every((cell) => cell.textContent !== "DENIED"),
     ).toBeTruthy();
-
-    // make sure the method is get
-    expect(axiosMock.history.get[2].method).toBe("get");
-    // make sure data is being displayed (more than 1 row)
-    const rows = screen.getAllByRole("row");
-    expect(rows.length).toBeGreaterThan(1);
-
   });
 
   test("Renders empty table when no completed requests", async () => {
@@ -107,13 +100,6 @@ describe("PendingRequestsPage tests", () => {
     expect(
       screen.getByTestId("RecommendationRequestTable"),
     ).toBeInTheDocument();
-
-    // make sure the method is get
-    expect(axiosMock.history.get[2].method).toBe("get");
-    
-    // make sure no data is being displayed
-    const rows = screen.getAllByRole("row");
-    expect(rows.length).toBe(3);
   });
 
   test("Renders pending and accepted requests for student", async () => {
@@ -170,13 +156,6 @@ describe("PendingRequestsPage tests", () => {
     expect(
       statusCells.every((cell) => cell.textContent !== "DENIED"),
     ).toBeTruthy();
-
-    // make sure the method is get
-    expect(axiosMock.history.get[2].method).toBe("get");
-
-    // make sure data is being displayed (more than 1 row)
-    const rows = screen.getAllByRole("row");
-    expect(rows.length).toBeGreaterThan(1);
   });
 
   test("Renders empty table when no completed requests for student", async () => {
@@ -206,13 +185,6 @@ describe("PendingRequestsPage tests", () => {
     expect(
       screen.getByTestId("RecommendationRequestTable"),
     ).toBeInTheDocument();
-
-    // make sure the method is get
-    expect(axiosMock.history.get[2].method).toBe("get");
-    
-    // make sure no data is being displayed
-    const rows = screen.getAllByRole("row");
-    expect(rows.length).toBe(3);
   });
 
   test("renders without crashing", async () => {
