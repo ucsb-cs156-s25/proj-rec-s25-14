@@ -134,7 +134,6 @@ describe("PendingRequestsPage tests", () => {
         screen.getByTestId(`RecommendationRequestTable-cell-row-0-col-status`),
       ).toBeInTheDocument();
     });
-    
 
     const statusCells = screen.getAllByTestId(
       /RecommendationRequestTable-cell-row-.*-col-status/,
