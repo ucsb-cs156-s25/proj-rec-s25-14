@@ -9,6 +9,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
+// format date helper function
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString();
+}
+
 export default function RecommendationRequestTable({ requests, currentUser }) {
   const navigate = useNavigate();
 
@@ -71,18 +76,31 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Submission Date",
       accessor: "submissionDate",
+      // turning into a readable date format mm/dd/yyyy
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
     {
       Header: "Last Modified Date",
       accessor: "lastModifiedDate",
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
     {
       Header: "Completion Date",
       accessor: "completionDate",
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
     {
       Header: "Due Date",
       accessor: "dueDate",
+      Cell: ({ value }) => {
+        return formatDate(value);
+      },
     },
   ];
 
