@@ -207,7 +207,7 @@ import lombok.extern.slf4j.Slf4j;
 <span class="fc" id="L207">        CurrentUser currentUser = getCurrentUser();</span>
 <span class="fc" id="L208">        RecommendationRequest recommendationRequest = new RecommendationRequest();</span>
 
-<span class="fc" id="L210">        RequestType requestType = requestTypeRepository.findById(recommendationTypeId).orElseThrow(() -&gt; new EntityNotFoundException(RequestType.class, recommendationTypeId));</span>
+<span class="fc" id="L210">        RequestType requestType = requestTypeRepository.findById(recommendationTypeId).orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Unknown Request Type ID: %d&quot;, recommendationTypeId)));</span>
         
 <span class="fc" id="L212">        recommendationRequest.setRecommendationType(requestType);</span>
 <span class="fc" id="L213">        recommendationRequest.setDetails(details);</span>
