@@ -11,6 +11,9 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "react-toastify/dist/ReactToastify.css";
+import RequestTypeIndexPage from "main/pages/RequestType/RequestTypeIndexPage";
+import RequestTypeCreatePage from "main/pages/RequestType/RequestTypeCreatePage";
+import RequestTypeEditPage from "main/pages/RequestType/RequestTypeEditPage";
 
 function App() {
   const { data: currentUser } = useCurrentUser();
@@ -40,6 +43,27 @@ function App() {
               exact
               path="/requests/statistics"
               element={<StatisticsPage />}
+            />
+          </>
+        )}
+
+        {(hasRole(currentUser, "ROLE_PROFESSOR") ||
+          hasRole(currentUser, "ROLE_ADMIN")) && (
+          <>
+            <Route
+              exact
+              path="/settings/requesttypes"
+              element={<RequestTypeIndexPage />}
+            />
+            <Route
+              exact
+              path="/settings/requesttypes/create"
+              element={<RequestTypeCreatePage />}
+            />
+            <Route
+              exact
+              path="/settings/requesttypes/create/:id"
+              element={<RequestTypeEditPage />}
             />
           </>
         )}

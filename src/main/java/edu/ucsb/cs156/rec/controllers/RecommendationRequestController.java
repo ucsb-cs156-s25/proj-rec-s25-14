@@ -235,4 +235,16 @@ public class RecommendationRequestController extends ApiController {
         return recommendationRequestRepository.findAllByProfessorIdAndStatus(
             currentUser.getId(), status);
     }
+
+    /**
+     * This methods return a list of all the recommendation requests for the admin.
+     * @return a list of all the recommendation requests.
+     */
+    @Operation(summary = "Get all recommendation requests for the admin")
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Iterable<RecommendationRequest> getAllRecoomendationRequest(){
+        return recommendationRequestRepository.findAll();
+    }
+    
 }

@@ -37,6 +37,10 @@ import edu.ucsb.cs156.rec.repositories.RecommendationRequestRepository;
 import edu.ucsb.cs156.rec.testconfig.TestConfig;
 import joptsimple.internal.OptionNameMap;
 
+import java.util.List;
+import java.util.Map;
+
+
 @WebMvcTest(controllers = RecommendationRequestController.class)
 @Import(TestConfig.class)
 public class RecommendationRequestControllerTest extends ControllerTestCase {
@@ -575,4 +579,159 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
         assertEquals("EntityNotFoundException", json.get("type"));
         assertEquals("RecommendationRequest with id 67 not found", json.get("message"));
     }
+    
+    //Admin can get all requests
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_can_get_all_requests() throws Exception {
+        //arrange
+        User user1 = User.builder().id(111).build();
+        User user2 = User.builder().id(112).build();
+        User user3 = User.builder().id(113).build();
+
+        User prof = User.builder()
+                .id(156)
+                .email("phtcon@ucsb.edu")
+                .googleSub("googleSub")
+                .fullName("Phill Conrad")
+                .givenName("Phill")
+                .familyName("Conrad")
+                .emailVerified(true)
+                .professor(true)
+                .build();
+
+        RecommendationRequest rec_111 = RecommendationRequest.builder()
+                .id(101)
+                .requester(user1)
+                .professor(prof)
+                .recommendationType("BSMS")
+                .details("hi!")
+                .status("COMPLETED")
+                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .build();
+        RecommendationRequest rec_112 = RecommendationRequest.builder()
+                .id(102)
+                .requester(user2)
+                .professor(prof)
+                .recommendationType("BSMS")
+                .details("hi!")
+                .status("COMPLETED")
+                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .build();
+        RecommendationRequest rec_113 = RecommendationRequest.builder()
+                .id(103)
+                .requester(user3)
+                .professor(prof)
+                .recommendationType("BSMS")
+                .details("hi!")
+                .status("COMPLETED")
+                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .build();
+        
+        String requestBody = "";
+        when(recommendationRequestRepository.findAll()).thenReturn(List.of(rec_111, rec_112, rec_113));
+        //act 
+        MvcResult response = mockMvc
+                .perform(get("/api/recommendationrequest/admin/all")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8")
+                .content(requestBody)
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = response.getResponse().getContentAsString();
+
+        String expectedJson1 = mapper.writeValueAsString(rec_111);
+        String expectedJson2 = mapper.writeValueAsString(rec_112);
+        String expectedJson3 = mapper.writeValueAsString(rec_113);
+
+        String expectedJson = "[" + expectedJson1 + "," + expectedJson2 + "," + expectedJson3 + "]";
+
+
+        // Assert that the contents match
+        assertEquals(content, expectedJson);
+
+    }
+
+    //Non-Admin can't get all requests
+    @WithMockUser(roles = {"PROFESSOR"})
+    @Test
+    public void non_admin_cannot_get_all_requests() throws Exception {
+        //arrange
+        User user1 = User.builder().id(111).build();
+        User user2 = User.builder().id(112).build();
+        User user3 = User.builder().id(113).build();
+
+        User prof = User.builder()
+                .id(156)
+                .email("phtcon@ucsb.edu")
+                .googleSub("googleSub")
+                .fullName("Phill Conrad")
+                .givenName("Phill")
+                .familyName("Conrad")
+                .emailVerified(true)
+                .professor(true)
+                .build();
+
+        RecommendationRequest rec_111 = RecommendationRequest.builder()
+                .id(101)
+                .requester(user1)
+                .professor(prof)
+                .recommendationType("BSMS")
+                .details("hi!")
+                .status("COMPLETED")
+                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .build();
+        RecommendationRequest rec_112 = RecommendationRequest.builder()
+                .id(102)
+                .requester(user2)
+                .professor(prof)
+                .recommendationType("BSMS")
+                .details("hi!")
+                .status("COMPLETED")
+                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .build();
+        RecommendationRequest rec_113 = RecommendationRequest.builder()
+                .id(103)
+                .requester(user3)
+                .professor(prof)
+                .recommendationType("BSMS")
+                .details("hi!")
+                .status("COMPLETED")
+                .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .dueDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .submissionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .lastModifiedDate(LocalDateTime.parse("2022-01-03T00:00:00"))
+                .build();
+        
+        String requestBody = "";
+        when(recommendationRequestRepository.findAll()).thenReturn(List.of(rec_111, rec_112, rec_113));
+        //act 
+        MvcResult response = mockMvc
+                .perform(get("/api/recommendationrequest/admin/all")
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("utf-8")
+                .content(requestBody)
+                .with(csrf()))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+    }
+
 }
