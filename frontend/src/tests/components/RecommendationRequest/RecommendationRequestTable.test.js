@@ -95,18 +95,18 @@ describe("UserTable tests", () => {
     expect(deleteButton).toBeInTheDocument();
 
     // expect date to be in the format mm/dd/yyyy
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-submissionDate`)).toHaveTextContent(
-      "1/2/2022",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastModifiedDate`)).toHaveTextContent(
-      "6/2/2022",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-completionDate`)).toHaveTextContent(
-      "6/2/2022",
-    );
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-dueDate`)).toHaveTextContent(
-      "9/2/2022",
-    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-submissionDate`),
+    ).toHaveTextContent("1/2/2022");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-lastModifiedDate`),
+    ).toHaveTextContent("6/2/2022");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-completionDate`),
+    ).toHaveTextContent("6/2/2022");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-dueDate`),
+    ).toHaveTextContent("9/2/2022");
   });
 
   test("Has the expected column headers and content for adminUser", () => {
