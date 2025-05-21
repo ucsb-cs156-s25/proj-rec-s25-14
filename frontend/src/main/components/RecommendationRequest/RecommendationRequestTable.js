@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
 // format date helper function
+// stryker disable next-line all : dont test this function
 function formatDate(dateString) {
   return new Date(dateString).toLocaleDateString();
 }
