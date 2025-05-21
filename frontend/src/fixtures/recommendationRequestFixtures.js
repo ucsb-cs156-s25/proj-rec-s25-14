@@ -177,6 +177,94 @@ const recommendationRequestFixtures = {
       done: false,
     },
   ],
+  deniedRecommendation: [
+    {
+      id: 1,
+      professor_id: 1,
+      professor: {
+        fullName: "Phil Conrad",
+        email: "phtcon@ucsb.edu",
+      },
+      submissionDate: "2022-02-02T12:00",
+      dueDate: "2022-04-02T12:00",
+      lastModifiedDate: "2022-02-02T12:00",
+      completionDate: "",
+      status: "DENIED",
+      details: "details",
+      recommendationType: "CS Department BS/MS program",
+      requester_id: 1,
+      requester: {
+        fullName: "Divyani Punj",
+        email: "divyanipunj@ucsb.edu",
+      },
+    },
+  ],
+  acceptedRecommendation: [
+    {
+      id: 1,
+      professor_id: 1,
+      professor: {
+        fullName: "Phil Conrad",
+        email: "phtcon@ucsb.edu",
+      },
+      submissionDate: "2022-02-02T12:00",
+      dueDate: "2022-04-02T12:00",
+      lastModifiedDate: "2022-02-02T12:00",
+      completionDate: "",
+      status: "ACCEPTED",
+      details: "details",
+      recommendationType: "CS Department BS/MS program",
+      requester_id: 1,
+      requester: {
+        fullName: "Divyani Punj",
+        email: "divyanipunj@ucsb.edu",
+      },
+    },
+  ],
+  completedRecommendation: [
+    {
+      id: 1,
+      professor_id: 1,
+      professor: {
+        fullName: "Phil Conrad",
+        email: "phtcon@ucsb.edu",
+      },
+      submissionDate: "2022-02-02T12:00",
+      dueDate: "2022-04-02T12:00",
+      lastModifiedDate: "2022-02-02T12:00",
+      completionDate: "2022-02-02T12:00",
+      status: "COMPLETED",
+      details: "details",
+      recommendationType: "CS Department BS/MS program",
+      requester_id: 1,
+      requester: {
+        fullName: "Divyani Punj",
+        email: "divyanipunj@ucsb.edu",
+      },
+    },
+  ],
+  pendingRecommendation: [
+    {
+      id: 1,
+      professor_id: 1,
+      professor: {
+        fullName: "Phil Conrad",
+        email: "phtcon@ucsb.edu",
+      },
+      submissionDate: "2022-02-02T12:00",
+      dueDate: "2022-04-02T12:00",
+      lastModifiedDate: "2022-02-02T12:00",
+      completionDate: "2022-02-02T12:00",
+      status: "PENDING",
+      details: "details",
+      recommendationType: "CS Department BS/MS program",
+      requester_id: 1,
+      requester: {
+        fullName: "Divyani Punj",
+        email: "divyanipunj@ucsb.edu",
+      },
+    },
+  ],
 };
 
 export { recommendationRequestFixtures };
