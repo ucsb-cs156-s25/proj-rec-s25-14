@@ -1,7 +1,7 @@
 import React from "react";
 import { recommendationRequestFixtures } from "../../../fixtures/recommendationRequestFixtures";
 import RecommendationRequestForm from "main/components/RecommendationRequest/RecommendationRequestForm";
-import recommendationTypeFixtures from "fixtures/recommendationTypeFixtures";
+import { recommendationTypeFixtures } from "fixtures/recommendationTypeFixtures";
 import usersFixtures from "fixtures/usersFixtures";
 
 export default {
