@@ -1,0 +1,25 @@
+{
+    "databaseChangeLog": [
+      {
+        "changeSet": {
+          "id": "RecommendationRequest-001",
+          "author": "chloeandersen-ucsb",
+          "changes": [
+            {
+              "addColumn": {
+                "tableName": "RECOMMENDATIONREQUEST",
+                "columns": [
+                  {
+                    "column": {
+                      "name": "DATE_ACCEPTED_OR_DENIED",
+                      "type": "TIMESTAMP"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+}
