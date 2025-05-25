@@ -204,7 +204,7 @@ public class RecommendationRequestController extends ApiController {
     /**
      * This method creates a new Recommendation Request. Accessible only to users with the role "ROLE_USER" so professors and students can both create.
      * @param professorId id from a dropdown of professors from the form in create page
-     * @param recommendationType recommendation types of request
+     * @param recommendationTypeId id of the recommendation type from the RequestType table
      * @param details details of request
      * @param dueDate submission date of request
      * @return the save recommendationrequests (with it's id field set by the database)
@@ -215,17 +215,17 @@ public class RecommendationRequestController extends ApiController {
     @PostMapping("/post")
     public RecommendationRequest postRecommendationRequests(
             @Parameter(name = "professorId") @RequestParam Long professorId,
-            @Parameter(name = "recommendationType") @RequestParam String recommendationType,
+            @Parameter(name = "recommendationTypeId") @RequestParam Long recommendationTypeId,
             @Parameter(name = "details") @RequestParam String details,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dueDate)
             {
         //get current date right now and set status to pending
         CurrentUser currentUser = getCurrentUser();
         RecommendationRequest recommendationRequest = new RecommendationRequest();
-        if (!recommendationType.equals("Other")) {
-            requestTypeRepository.findByRequestType(recommendationType).orElseThrow(() -> new EntityNotFoundException(RequestType.class, recommendationType));
-        }
-        recommendationRequest.setRecommendationType(recommendationType);
+
+        RequestType requestType = requestTypeRepository.findById(recommendationTypeId).orElseThrow(() -> new IllegalArgumentException(String.format("Unknown Request Type ID: %d", recommendationTypeId)));
+        
+        recommendationRequest.setRecommendationType(requestType);
         recommendationRequest.setDetails(details);
         User professor = userRepository.findById(professorId).orElseThrow(() -> new EntityNotFoundException(User.class, professorId));
         recommendationRequest.setProfessor(professor);

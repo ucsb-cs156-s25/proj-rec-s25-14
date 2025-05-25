@@ -9,6 +9,7 @@ import edu.ucsb.cs156.rec.entities.User;
 import edu.ucsb.cs156.rec.repositories.RecommendationRequestRepository;
 import edu.ucsb.cs156.rec.repositories.RequestTypeRepository;
 
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,10 +118,15 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 User professor = User.builder().email("testemail@ucsb.edu").fullName("Test Prof").build();
                 User currentUser = currentUserService.getCurrentUser().getUser();
                 LocalDateTime now = LocalDateTime.now();
+                RequestType phDRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("PhD program")
+                        .build();
+
                 RecommendationRequest recommendationRequest = RecommendationRequest.builder()
                                 .professor(professor)
                                 .requester(currentUser)
-                                .recommendationType("PhD program")
+                                .recommendationType(phDRequestType)
                                 .details("other details")
                                 .dueDate(now)
                                 .build();
@@ -147,10 +153,14 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 User currentUser = currentUserService.getCurrentUser().getUser();
                 User requester = User.builder().email("testemail@ucsb.edu").fullName("Test Prof").build();
                 LocalDateTime now = LocalDateTime.now();
+                RequestType phDRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("PhD program")
+                        .build();
                 RecommendationRequest recommendationRequest = RecommendationRequest.builder()
                                 .professor(currentUser)
                                 .requester(requester)
-                                .recommendationType("PhD program")
+                                .recommendationType(phDRequestType)
                                 .details("other details")
                                 .dueDate(now)
                                 .build();
@@ -176,10 +186,14 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 // arrange
                 User requester = User.builder().email("testemail@ucsb.edu").fullName("Test Prof").build();
                 LocalDateTime now = LocalDateTime.now();
+                RequestType phDRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("PhD program")
+                        .build();
                 RecommendationRequest recommendationRequest = RecommendationRequest.builder()
                                 .professor(requester)
                                 .requester(requester)
-                                .recommendationType("PhD program")
+                                .recommendationType(phDRequestType)
                                 .details("other details")
                                 .dueDate(now)
                                 .build();
@@ -226,10 +240,14 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 User other2 = User.builder().email("testemail2@ucsb.edu").fullName("Test User2").build();
                 User currentUser = currentUserService.getCurrentUser().getUser();
                 LocalDateTime now = LocalDateTime.now();
+                RequestType phDRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("PhD program")
+                        .build();
                 RecommendationRequest recommendationRequest1 = RecommendationRequest.builder()
                                 .professor(other)
                                 .requester(currentUser)
-                                .recommendationType("PhD program")
+                                .recommendationType(phDRequestType)
                                 .details("other details")
                                 .dueDate(now)
                                 .build();
@@ -237,7 +255,7 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 RecommendationRequest recommendationRequest2 = RecommendationRequest.builder()
                                 .professor(other2)
                                 .requester(currentUser)
-                                .recommendationType("PhD program")
+                                .recommendationType(phDRequestType)
                                 .details("other details")
                                 .dueDate(now)
                                 .build();
@@ -269,10 +287,14 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 User other2 = User.builder().id(2L).email("testemail2@ucsb.edu").fullName("Test User2").build();
                 User currentUser = currentUserService.getCurrentUser().getUser();
                 LocalDateTime now = LocalDateTime.now();
+                RequestType phDRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("PhD program")
+                        .build();
                 RecommendationRequest recommendationRequest1 = RecommendationRequest.builder()
                                 .professor(currentUser)
                                 .requester(other)
-                                .recommendationType("PhD program")
+                                .recommendationType(phDRequestType)
                                 .details("other details")
                                 .dueDate(now)
                                 .build();
@@ -280,7 +302,7 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 RecommendationRequest recommendationRequest2 = RecommendationRequest.builder()
                                 .professor(currentUser)
                                 .requester(other2)
-                                .recommendationType("PhD program")
+                                .recommendationType(phDRequestType)
                                 .details("other details")
                                 .dueDate(now)
                                 .build();
@@ -308,10 +330,14 @@ public class RecommendationRequestTests extends ControllerTestCase {
                 // arrange
                 User u = currentUserService.getCurrentUser().getUser();
                 User other = User.builder().id(7L).email("testemail@ucsb.edu").fullName("Test User").build();
+                RequestType otherRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("Other")
+                        .build();
                 RecommendationRequest recommendationRequest1 = RecommendationRequest.builder()
                                 .professor(other)
                                 .requester(u)
-                                .recommendationType("Other")
+                                .recommendationType(otherRequestType)
                                 .details("otherdetails")
                                 .dueDate(LocalDateTime.parse("2024-11-25T16:46:28"))
                                 .status("PENDING")
@@ -319,10 +345,11 @@ public class RecommendationRequestTests extends ControllerTestCase {
 
                 when(recommendationRequestRepository.save(eq(recommendationRequest1))).thenReturn(recommendationRequest1);
                 when(userRepository.findById(7L)).thenReturn(Optional.of(other));
+                when(requestTypeRepository.findById(1L)).thenReturn(Optional.of(otherRequestType));
                 // act
                 MvcResult response = mockMvc.perform(
                                 post("/api/recommendationrequest/post")
-                                .param("recommendationType", "Other")
+                                .param("recommendationTypeId", "1")
                                 .param("details", "otherdetails")
                                 .param("professorId", "7")
                                 .param("dueDate", "2024-11-25T16:46:28")
@@ -340,11 +367,14 @@ public class RecommendationRequestTests extends ControllerTestCase {
         @Test
         public void a_user_can_post_a_new_recommendation_request_without_existing_professor() throws Exception {
                 // act
-                RequestType r = RequestType.builder().requestType("PhD program").build();
-                when(requestTypeRepository.findByRequestType("PhD program")).thenReturn(Optional.of(r));
+                RequestType phDRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("PhD program")
+                        .build();
+                when(requestTypeRepository.findById(1L)).thenReturn(Optional.of(phDRequestType));
                 mockMvc.perform(
                                 post("/api/recommendationrequest/post")
-                                .param("recommendationType", "PhD program")
+                                .param("recommendationTypeId", "1")
                                 .param("details", "otherdetails")
                                 .param("professorId", "7")
                                 .param("dueDate", "2024-11-25T16:46:28")
@@ -359,11 +389,15 @@ public class RecommendationRequestTests extends ControllerTestCase {
         public void rec_type_in_table_and_not_other() throws Exception {
                 // arrange
                 User u = currentUserService.getCurrentUser().getUser();
+                RequestType bsMSRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("CS Department BS/MS program")
+                        .build();
                 User other = User.builder().id(7L).email("testemail@ucsb.edu").fullName("Test User").build();
                 RecommendationRequest recommendationRequest1 = RecommendationRequest.builder()
                                 .professor(other)
                                 .requester(u)
-                                .recommendationType("CS Department BS/MS program")
+                                .recommendationType(bsMSRequestType)
                                 .details("test")
                                 .dueDate(LocalDateTime.parse("2024-11-25T16:46:28"))
                                 .status("PENDING")
@@ -371,12 +405,11 @@ public class RecommendationRequestTests extends ControllerTestCase {
 
                 when(recommendationRequestRepository.save(eq(recommendationRequest1))).thenReturn(recommendationRequest1);
                 when(userRepository.findById(7L)).thenReturn(Optional.of(other));
-                RequestType r = RequestType.builder().requestType("CS Department BS/MS program").build();
-                when(requestTypeRepository.findByRequestType("CS Department BS/MS program")).thenReturn(Optional.of(r));
+                when(requestTypeRepository.findById(1L)).thenReturn(Optional.of(bsMSRequestType));
                 // act
                 MvcResult response = mockMvc.perform(
                                 post("/api/recommendationrequest/post")
-                                .param("recommendationType", "CS Department BS/MS program")
+                                .param("recommendationTypeId", "1")
                                 .param("details", "test")
                                 .param("professorId", "7")
                                 .param("dueDate", "2024-11-25T16:46:28")
@@ -394,19 +427,23 @@ public class RecommendationRequestTests extends ControllerTestCase {
         @Test
         public void rec_type_not_table_and_not_other() throws Exception {
                 // act
-                when(requestTypeRepository.findByRequestType("Not correct")).thenReturn(Optional.empty());
+                RequestType bsMSRequestType = RequestType.builder()
+                        .id(1L)
+                        .requestType("CS Department BS/MS program")
+                        .build();
+                when(requestTypeRepository.findById(1L)).thenReturn(Optional.empty());
                 MvcResult response = mockMvc.perform(
                                 post("/api/recommendationrequest/post")
-                                .param("recommendationType", "CS Department BS/MS program")
+                                .param("recommendationTypeId", "1")
                                 .param("details", "otherdetails")
                                 .param("professorId", "7")
                                 .param("dueDate", "2024-11-25T16:46:28")
                                 .with(csrf()))
-                                .andExpect(status().isNotFound()).andReturn();
+                                .andExpect(status().isBadRequest()).andReturn();
                 // assert
                 Map<String, Object> json = responseToJson(response);
-                assertEquals("EntityNotFoundException", json.get("type"));
-                assertEquals("RequestType with id CS Department BS/MS program not found", json.get("message"));
+                assertEquals("IllegalArgumentException", json.get("type"));
+                assertEquals("Unknown Request Type ID: 1", json.get("message"));
 
         }
         

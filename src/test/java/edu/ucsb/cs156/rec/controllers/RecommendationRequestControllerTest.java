@@ -2,6 +2,10 @@ package edu.ucsb.cs156.rec.controllers;
 import edu.ucsb.cs156.rec.entities.User;
 import edu.ucsb.cs156.rec.entities.RecommendationRequest;
 import edu.ucsb.cs156.rec.repositories.UserRepository;
+
+import edu.ucsb.cs156.rec.entities.RequestType;
+import edu.ucsb.cs156.rec.repositories.RequestTypeRepository;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +58,9 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
     @MockBean
     UserRepository userRepository;
 
+    @MockBean
+    RequestTypeRepository requestTypeRepository;
+
     private static User buildProfessor(String email, String googleSub, String fullName, String givenName, String familyName, Long id) {
         return User.builder()
                     .id(id)
@@ -67,7 +74,7 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
                     .build();
     }
 
-    private static RecommendationRequest buildRecommendationRequest(Long id, User requester, User professor, String recommendationType, String details, String status, String dueDate, String submissionDate, String lastModifiedDate, String completionDate) {
+    private static RecommendationRequest buildRecommendationRequest(Long id, User requester, User professor, RequestType recommendationType, String details, String status, String dueDate, String submissionDate, String lastModifiedDate, String completionDate) {
         return RecommendationRequest.builder()
                     .id(id)
                     .requester(requester)
@@ -81,7 +88,14 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
                     .completionDate(completionDate != null ? LocalDateTime.parse(completionDate) : null)
                     .build();
     }
-
+  
+    private static RequestType buildRequestType (Long id, String requestType) {
+        return RequestType.builder()
+                    .id(id)
+                    .requestType(requestType)
+                    .build();
+    }
+ 
     //User can delete their own recommendation request
     @WithMockUser(roles = { "USER" })
     @Test
@@ -89,9 +103,10 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
 
         User user = currentUserService.getCurrentUser().getUser(); 
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
-        
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
         // arrange
-        RecommendationRequest recReq = buildRecommendationRequest(15L, user, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
+        RecommendationRequest recReq = buildRecommendationRequest(15L, user, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
+      
 
         when(recommendationRequestRepository.findByIdAndRequester(eq(15L), eq(user))).thenReturn(Optional.of(recReq));
 
@@ -119,7 +134,9 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
         User user2 = User.builder().id(44).build(); 
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
 
-        RecommendationRequest rec1 = buildRecommendationRequest(15L, user1, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+
+        RecommendationRequest rec1 = buildRecommendationRequest(15L, user1, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
                 
         when(recommendationRequestRepository.findByIdAndRequester(eq(15L),eq(user2))).thenReturn(Optional.of(rec1));
 
@@ -143,8 +160,11 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
 
         User user1 = currentUserService.getCurrentUser().getUser();
         User user2 = User.builder().id(44).build();
+
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
-        RecommendationRequest rec1 = buildRecommendationRequest(67L, user2, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+        RecommendationRequest rec1 = buildRecommendationRequest(67L, user2, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+
 
         when(recommendationRequestRepository.findById(eq(67L))).thenReturn(Optional.of(rec1));
 
@@ -167,8 +187,11 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
         // arrange
 
         User user2 = User.builder().id(44).build(); 
+
+
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
-        RecommendationRequest rec1 = buildRecommendationRequest(67L, user2, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+        RecommendationRequest rec1 = buildRecommendationRequest(67L, user2, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
         when(recommendationRequestRepository.findById(eq(67L))).thenReturn(Optional.of(rec1));
         // act
@@ -210,10 +233,12 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
     @Test
     public void user_logged_in_put_recommendation_request() throws Exception {
         User user1 = currentUserService.getCurrentUser().getUser(); 
+        
         User prof1 = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
-        RecommendationRequest rec = buildRecommendationRequest(63L, user1, prof1, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
-        RecommendationRequest rec_updated = buildRecommendationRequest(63L, user1, prof1, "PhDprogram", "more details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
-        RecommendationRequest rec_corrected = buildRecommendationRequest(63L, user1, prof1, "PhDprogram", "more details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");              
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+        RecommendationRequest rec = buildRecommendationRequest(63L, user1, prof1, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec_updated = buildRecommendationRequest(63L, user1, prof1, phDRequestType, "more details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec_corrected = buildRecommendationRequest(63L, user1, prof1, phDRequestType, "more details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");              
         
         String requestBody = mapper.writeValueAsString(rec_updated); 
         String expectedReturn = mapper.writeValueAsString(rec_corrected); 
@@ -245,8 +270,10 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
 
         User user1 = currentUserService.getCurrentUser().getUser(); 
 
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
-        RecommendationRequest rec = buildRecommendationRequest(67L, user1, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec = buildRecommendationRequest(67L, user1, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
         String requestBody = mapper.writeValueAsString(rec); 
         when(recommendationRequestRepository.findByIdAndRequester(eq(67L), eq(user1))).thenReturn(Optional.empty());
@@ -272,10 +299,11 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
     public void user_can_not_put_recommendation_request_for_another_user() throws Exception {
         User user1 = currentUserService.getCurrentUser().getUser(); 
         User user2 = User.builder().id(44).build(); 
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
-        RecommendationRequest rec = buildRecommendationRequest(67L, user2, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec = buildRecommendationRequest(67L, user2, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
-        RecommendationRequest rec_updated = buildRecommendationRequest(67L, user1, prof, "PhDprogram", "more details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec_updated = buildRecommendationRequest(67L, user1, prof, phDRequestType, "more details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
         when(recommendationRequestRepository.findByIdAndRequester(eq(31L), eq(user2)))
         .thenReturn(Optional.of(rec));
@@ -306,11 +334,13 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
     public void prof_can_put_recommendation_request() throws Exception {
         //arrange
         User student = User.builder().id(99).build(); 
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+        
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
 
-        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
-        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
         String requestBody = mapper.writeValueAsString(rec_updated);
 
@@ -355,7 +385,8 @@ public class RecommendationRequestControllerTest extends ControllerTestCase {
         User user2 = User.builder().id(200).build(); 
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
 
-        RecommendationRequest rec_updated = buildRecommendationRequest(67L, user2, prof, "PhDprogram", "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+        RecommendationRequest rec_updated = buildRecommendationRequest(67L, user2, prof, phDRequestType, "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
         String requestBody = mapper.writeValueAsString(rec_updated);
 
@@ -386,11 +417,13 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
         User prof = currentUserService.getCurrentUser().getUser();
         User student = User.builder().id(99).build();
 
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+
         RecommendationRequest rec = RecommendationRequest.builder()
             .id(1L)
             .requester(student)
             .professor(prof)
-            .recommendationType("PhDprogram")
+            .recommendationType(phDRequestType)
             .details("test details")
             .status("PENDING")
             .build();
@@ -399,7 +432,7 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
             .id(1L)
             .requester(student)
             .professor(prof)
-            .recommendationType("PhDprogram")
+            .recommendationType(phDRequestType)
             .details("test details")
             .status("ACCEPTED")
             .build();
@@ -444,12 +477,13 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
         // arrange
         User prof = currentUserService.getCurrentUser().getUser();
         User student = User.builder().id(99).build();
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
 
         RecommendationRequest rec = RecommendationRequest.builder()
             .id(1L)
             .requester(student)
             .professor(prof)
-            .recommendationType("PhDprogram")
+            .recommendationType(phDRequestType)
             .details("test details")
             .status("PENDING")
             .build();
@@ -458,7 +492,7 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
             .id(1L)
             .requester(student)
             .professor(prof)
-            .recommendationType("PhDprogram")
+            .recommendationType(phDRequestType)
             .details("test details")
             .status("DENIED")
             .build();
@@ -504,12 +538,13 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
         // arrange
         User prof = currentUserService.getCurrentUser().getUser();
         User student = User.builder().id(99).build();
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
 
         RecommendationRequest rec = RecommendationRequest.builder()
             .id(1L)
             .requester(student)
             .professor(prof)
-            .recommendationType("PhDprogram")
+            .recommendationType(phDRequestType)
             .details("test details")
             .status("PENDING")
             .completionDate(null)
@@ -519,7 +554,7 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
             .id(1L)
             .requester(student)
             .professor(prof)
-            .recommendationType("PhDprogram")
+            .recommendationType(phDRequestType)
             .details("test details")
             .status("PENDING") 
             .completionDate(null)
@@ -560,9 +595,10 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
         //arrange
         User student = User.builder().id(99).build(); 
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
         
-        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
-        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
+        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
 
         String requestBody = mapper.writeValueAsString(rec_updated);
 
@@ -609,11 +645,17 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
                 .professor(true)
                 .build();
 
+        RequestType bsMSRequestType = RequestType.builder()
+                .id(1L)
+                .requestType("BSMS")
+                .build();
+
+
         RecommendationRequest rec_111 = RecommendationRequest.builder()
                 .id(101)
                 .requester(user1)
                 .professor(prof)
-                .recommendationType("BSMS")
+                .recommendationType(bsMSRequestType)
                 .details("hi!")
                 .status("COMPLETED")
                 .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
@@ -625,7 +667,7 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
                 .id(102)
                 .requester(user2)
                 .professor(prof)
-                .recommendationType("BSMS")
+                .recommendationType(bsMSRequestType)
                 .details("hi!")
                 .status("COMPLETED")
                 .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
@@ -637,7 +679,7 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
                 .id(103)
                 .requester(user3)
                 .professor(prof)
-                .recommendationType("BSMS")
+                .recommendationType(bsMSRequestType)
                 .details("hi!")
                 .status("COMPLETED")
                 .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
@@ -692,11 +734,18 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
                 .professor(true)
                 .build();
 
+        RequestType bsMSRequestType = RequestType.builder()
+                .id(1L)
+                .requestType("BSMS")
+                .build();
+
+
+
         RecommendationRequest rec_111 = RecommendationRequest.builder()
                 .id(101)
                 .requester(user1)
                 .professor(prof)
-                .recommendationType("BSMS")
+                .recommendationType(bsMSRequestType)
                 .details("hi!")
                 .status("COMPLETED")
                 .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
@@ -708,7 +757,7 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
                 .id(102)
                 .requester(user2)
                 .professor(prof)
-                .recommendationType("BSMS")
+                .recommendationType(bsMSRequestType)
                 .details("hi!")
                 .status("COMPLETED")
                 .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
@@ -720,7 +769,7 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
                 .id(103)
                 .requester(user3)
                 .professor(prof)
-                .recommendationType("BSMS")
+                .recommendationType(bsMSRequestType)
                 .details("hi!")
                 .status("COMPLETED")
                 .completionDate(LocalDateTime.parse("2022-01-03T00:00:00"))
@@ -750,10 +799,14 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
         User student = User.builder().id(99).build(); 
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
 
-        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+        
+        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "COMPLETED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
-        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "ACCEPTED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
 
+        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "ACCEPTED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
+
+        
         String requestBody = mapper.writeValueAsString(rec_updated);
 
         when(recommendationRequestRepository.findById(eq(67L))).thenReturn(Optional.of(rec));
@@ -789,9 +842,13 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
         User student = User.builder().id(99).build(); 
         User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
 
-        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
+        RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+        
+        
+        RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
 
-        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "DENIED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
+
+        RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "DENIED", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00");
 
         String requestBody = mapper.writeValueAsString(rec_updated);
 
@@ -824,33 +881,37 @@ public void prof_can_change_status_from_pending_to_accepted_and_dateAcceptedOrDe
         @WithMockUser(roles = {"PROFESSOR"})
         @Test
         public void prof_cannot_update_status_to_invalid_status() throws Exception {
-                //arrange
-                User student = User.builder().id(99).build(); 
-                User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
-                
-                RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
-                RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, "PhDprogram", "details", "INVALID", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
 
-                String requestBody = mapper.writeValueAsString(rec_updated);
+            //arrange
+            User student = User.builder().id(99).build(); 
+            User prof = buildProfessor("profA@ucsb.edu", "googleSub", "Prof A", "Prof", "A", 22L);
+            
+            RequestType phDRequestType = buildRequestType(1L, "phDProgram");
+            
+            RecommendationRequest rec = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "PENDING", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
+            RecommendationRequest rec_updated = buildRecommendationRequest(67L, student, prof, phDRequestType, "details", "INVALID", "2022-01-03T00:00:00", "2022-01-03T00:00:00", "2022-01-03T00:00:00", null);
 
-                when(recommendationRequestRepository.findById(eq(67L))).thenReturn(Optional.of(rec));
+            String requestBody = mapper.writeValueAsString(rec_updated);
 
-                //act
-                MvcResult response = mockMvc
-                        .perform(put("/api/recommendationrequest/professor?id=67")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                        .andExpect(status().isBadRequest())
-                        .andReturn();
+            when(recommendationRequestRepository.findById(eq(67L))).thenReturn(Optional.of(rec));
 
-                //assert
-                verify(recommendationRequestRepository, times(1)).findById(67L);
-                verify(recommendationRequestRepository, times(0)).save(any(RecommendationRequest.class));
+            //act
+            MvcResult response = mockMvc
+                    .perform(put("/api/recommendationrequest/professor?id=67")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+                    .andExpect(status().isBadRequest())
+                    .andReturn();
 
-                Map<String, Object> json = responseToJson(response);
-                assertEquals("IllegalArgumentException", json.get("type"));
-                assertEquals("Unknown Request Status: INVALID", json.get("message"));
+            //assert
+            verify(recommendationRequestRepository, times(1)).findById(67L);
+            verify(recommendationRequestRepository, times(0)).save(any(RecommendationRequest.class));
+
+            Map<String, Object> json = responseToJson(response);
+            assertEquals("IllegalArgumentException", json.get("type"));
+            assertEquals("Unknown Request Status: INVALID", json.get("message"));
+
         }
 }
