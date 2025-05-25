@@ -280,4 +280,45 @@ describe("AppNavbar tests", () => {
 
     expect(screen.queryByText("Settings")).not.toBeInTheDocument();
   });
+
+  test("Student Profile Page shows up when student logged in", async () => {
+    const currentUser = currentUserFixtures.studentUser;
+    const systemInfo = systemInfoFixtures.showingBoth;
+    const doLogin = jest.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    await screen.findByText("Student Profile");
+    const StudentProfile = screen.getByText("Student Profile");
+    expect(StudentProfile).toBeInTheDocument();
+  });
+
+  test("Student Profile Page does not shows up when student not logged in", async () => {
+    const currentUser = currentUserFixtures.adminUser;
+    const systemInfo = systemInfoFixtures.showingBoth;
+    const doLogin = jest.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AppNavbar
+            currentUser={currentUser}
+            systemInfo={systemInfo}
+            doLogin={doLogin}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.queryByText("Student Profile Page")).not.toBeInTheDocument();
+  });
 });

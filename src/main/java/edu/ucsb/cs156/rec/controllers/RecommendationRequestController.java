@@ -258,7 +258,7 @@ public class RecommendationRequestController extends ApiController {
     @Operation(summary = "Get all recommendation requests for the admin")
     @GetMapping("/admin/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Iterable<RecommendationRequest> getAllRecoomendationRequest(){
+    public Iterable<RecommendationRequest> getAllRecommendationRequest(){
         return recommendationRequestRepository.findAll();
     }
     

@@ -56,11 +56,19 @@ export default function AppNavbar({
                   data-testid="appnavbar-admin-dropdown"
                 >
                   <NavDropdown.Item href="/admin/users">Users</NavDropdown.Item>
+                  <NavDropdown.Item href="/admin/requests">
+                    Requests
+                  </NavDropdown.Item>
                 </NavDropdown>
               )}
               {(hasRole(currentUser, "ROLE_PROFESSOR") ||
                 hasRole(currentUser, "ROLE_STUDENT")) && (
                 <>
+                  {hasRole(currentUser, "ROLE_STUDENT") && (
+                    <Nav.Link as={Link} to="/studentprofile">
+                      Student Profile
+                    </Nav.Link>
+                  )}
                   <Nav.Link as={Link} to="/requests/pending">
                     Pending Requests
                   </Nav.Link>

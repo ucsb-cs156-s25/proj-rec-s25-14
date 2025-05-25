@@ -127,15 +127,4 @@ public class UsersController extends ApiController {
         return genericMessage("User with id %s has toggled professor status to %s".formatted(id, user.getProfessor()));
     }
 
-    @Operation(summary = "Toggle the student field")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/toggleStudent")
-    public Object toggleStudent( @Parameter(name = "id", description = "Long, id number of user to toggle their student field", example = "1", required = true) @RequestParam Long id){
-        User user = userRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException(User.class, id));
-
-        user.setStudent(!user.getStudent());
-        userRepository.save(user);
-        return genericMessage("User with id %s has toggled student status to %s".formatted(id, user.getStudent()));
-    }
 }
