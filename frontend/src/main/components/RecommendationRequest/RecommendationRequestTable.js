@@ -13,6 +13,7 @@ import * as dateutils from "main/utils/dateutils";
 // format date helper function
 // stryker disable next-line all : dont test this function
 function formatDate(dateString) {
+  if (!dateString) return "";
   return new Date(dateString).toLocaleDateString();
 }
 
