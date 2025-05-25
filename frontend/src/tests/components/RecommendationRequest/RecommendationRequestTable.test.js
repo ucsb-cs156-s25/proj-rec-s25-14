@@ -82,6 +82,19 @@ describe("UserTable tests", () => {
       "3",
     );
 
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-submissionDate`),
+    ).toHaveTextContent("01/02/2022 12:00");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-lastModifiedDate`),
+    ).toHaveTextContent("06/02/2022 12:00");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-completionDate`),
+    ).toHaveTextContent("06/02/2022 12:00");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-dueDate`),
+    ).toHaveTextContent("09/02/2022 12:00");
+
     const editButton = screen.queryByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
     );
@@ -172,6 +185,19 @@ describe("UserTable tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
       "3",
     );
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-submissionDate`),
+    ).toHaveTextContent("01/02/2022 12:00");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-lastModifiedDate`),
+    ).toHaveTextContent("06/02/2022 12:00");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-completionDate`),
+    ).toHaveTextContent("06/02/2022 12:00");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-dueDate`),
+    ).toHaveTextContent("09/02/2022 12:00");
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,

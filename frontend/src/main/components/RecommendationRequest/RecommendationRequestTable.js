@@ -8,6 +8,7 @@ import {
 } from "main/utils/RecommendationRequestUtils";
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
+import * as dateutils from "main/utils/dateutils";
 
 // format date helper function
 // stryker disable next-line all : dont test this function
@@ -77,6 +78,7 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Submission Date",
       accessor: "submissionDate",
+
       // turning into a readable date format mm/dd/yyyy
       Cell: ({ value }) => {
         return formatDate(value);
@@ -85,6 +87,7 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Last Modified Date",
       accessor: "lastModifiedDate",
+
       Cell: ({ value }) => {
         return formatDate(value);
       },
@@ -92,6 +95,7 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Completion Date",
       accessor: "completionDate",
+
       Cell: ({ value }) => {
         return formatDate(value);
       },
@@ -99,6 +103,7 @@ export default function RecommendationRequestTable({ requests, currentUser }) {
     {
       Header: "Due Date",
       accessor: "dueDate",
+
       Cell: ({ value }) => {
         return formatDate(value);
       },
