@@ -258,7 +258,7 @@ import lombok.extern.slf4j.Slf4j;
     @Operation(summary = &quot;Get all recommendation requests for the admin&quot;)
     @GetMapping(&quot;/admin/all&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    public Iterable&lt;RecommendationRequest&gt; getAllRecoomendationRequest(){
+    public Iterable&lt;RecommendationRequest&gt; getAllRecommendationRequest(){
 <span class="fc" id="L262">        return recommendationRequestRepository.findAll();</span>
     }
     
