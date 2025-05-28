@@ -1,0 +1,37 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "RecommendationRequest-003-fix",
+        "author": "ryanchoi07",
+        "comment": "Fix foreign key constraint by properly converting RECOMMENDATION_TYPE_ID to BIGINT",
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "RECOMMENDATIONREQUEST",
+              "constraintName": "RECOMMENDATIONREQUEST_RECOMMENDATION_TYPE_ID_FK"
+            }
+          },
+          {
+            "modifyDataType": {
+              "tableName": "RECOMMENDATIONREQUEST",
+              "columnName": "RECOMMENDATION_TYPE_ID",
+              "newDataType": "BIGINT"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "RECOMMENDATION_TYPE_ID",
+              "baseTableName": "RECOMMENDATIONREQUEST",
+              "constraintName": "RECOMMENDATIONREQUEST_RECOMMENDATION_TYPE_ID_FK",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "REQUESTTYPE",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
