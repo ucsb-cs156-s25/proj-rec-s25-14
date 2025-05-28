@@ -1,0 +1,37 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "RecommendationRequest-003",
+        "author": "ryanchoi07",
+        "comment": "Fix the data type issue from migration 002",
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "RECOMMENDATIONREQUEST",
+              "constraintName": "RECOMMENDATIONREQUEST_RECOMMENDATION_TYPE_ID_FK"
+            }
+          },
+          {
+            "modifyDataType": {
+              "tableName": "RECOMMENDATIONREQUEST",
+              "columnName": "RECOMMENDATION_TYPE_ID",
+              "newDataType": "BIGINT"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "RECOMMENDATION_TYPE_ID",
+              "baseTableName": "RECOMMENDATIONREQUEST",
+              "constraintName": "RECOMMENDATIONREQUEST_RECOMMENDATION_TYPE_ID_FK",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "REQUESTTYPE",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
