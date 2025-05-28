@@ -2,7 +2,7 @@
   "databaseChangeLog": [
     {
       "changeSet": {
-        "id": "RecommendationRequest-003-fix",
+        "id": "RecommendationRequest-003",
         "author": "ryanchoi07",
         "comment": "Fix foreign key constraint by properly converting RECOMMENDATION_TYPE_ID to BIGINT",
         "changes": [
