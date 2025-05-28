@@ -3,5 +3,6 @@
         {"include": {"file": "db/migration/changes/RequestType.json"}},
         {"include": {"file": "db/migration/changes/RecommendationRequest.json"}},
         {"include": {"file": "db/migration/changes/RecommendationRequest-001.json"}},
-        {"include": {"file": "db/migration/changes/RecommendationRequest-002.json"}}
+        {"include": {"file": "db/migration/changes/RecommendationRequest-002.json"}},
+        {"include": {"file": "db/migration/changes/RecommendationRequest-003.json"}}
 ]}
