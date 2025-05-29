@@ -1,0 +1,26 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "RecommendationRequest-003",
+        "author": "ryanchoi07",
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "RECOMMENDATIONREQUEST",
+              "constraintName": "RECOMMENDATIONREQUEST_RECOMMENDATION_TYPE_ID_FK"
+            }
+          },
+          {
+            "renameColumn": {
+              "tableName": "RECOMMENDATIONREQUEST",
+              "oldColumnName": "RECOMMENDATION_TYPE_ID",
+              "newColumnName": "RECOMMENDATION_TYPE",
+              "columnDataType": "VARCHAR(255)"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

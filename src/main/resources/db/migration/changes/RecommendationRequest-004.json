@@ -1,0 +1,30 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "RecommendationRequest-004",
+        "author": "Lucas Havemose",
+        "changes": [
+          {
+            "addUniqueConstraint": {
+              "constraintName": "REQUESTTYPE_UNIQUE_TYPE",
+              "tableName": "REQUESTTYPE",
+              "columnNames": "REQUEST_TYPE"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "constraintName": "RECOMMENDATIONREQUEST_RECOMMENDATION_TYPE_FK",
+              "baseTableName": "RECOMMENDATIONREQUEST",
+              "baseColumnNames": "RECOMMENDATION_TYPE",
+              "referencedTableName": "REQUESTTYPE",
+              "referencedColumnNames": "REQUEST_TYPE",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

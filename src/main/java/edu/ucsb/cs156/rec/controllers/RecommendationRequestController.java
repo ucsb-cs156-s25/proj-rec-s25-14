@@ -204,7 +204,7 @@ public class RecommendationRequestController extends ApiController {
     /**
      * This method creates a new Recommendation Request. Accessible only to users with the role "ROLE_USER" so professors and students can both create.
      * @param professorId id from a dropdown of professors from the form in create page
-     * @param recommendationTypeId id of the recommendation type from the RequestType table
+     * @param recommendationType string of the recommendation type from the RequestType table
      * @param details details of request
      * @param dueDate submission date of request
      * @return the save recommendationrequests (with it's id field set by the database)
@@ -215,7 +215,7 @@ public class RecommendationRequestController extends ApiController {
     @PostMapping("/post")
     public RecommendationRequest postRecommendationRequests(
             @Parameter(name = "professorId") @RequestParam Long professorId,
-            @Parameter(name = "recommendationTypeId") @RequestParam Long recommendationTypeId,
+            @Parameter(name = "recommendationType") @RequestParam String recommendationType,
             @Parameter(name = "details") @RequestParam String details,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dueDate)
             {
@@ -223,7 +223,7 @@ public class RecommendationRequestController extends ApiController {
         CurrentUser currentUser = getCurrentUser();
         RecommendationRequest recommendationRequest = new RecommendationRequest();
 
-        RequestType requestType = requestTypeRepository.findById(recommendationTypeId).orElseThrow(() -> new IllegalArgumentException(String.format("Unknown Request Type ID: %d", recommendationTypeId)));
+        RequestType requestType = requestTypeRepository.findByRequestType(recommendationType).orElseThrow(() -> new IllegalArgumentException(String.format("Unknown Request Type string: %s", recommendationType)));
         
         recommendationRequest.setRecommendationType(requestType);
         recommendationRequest.setDetails(details);
