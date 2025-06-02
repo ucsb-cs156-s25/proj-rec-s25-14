@@ -2,6 +2,9 @@
 
 Recommendation Request Manager
 
+Production Deployment: https://rec.dokku-14.cs.ucsb.edu/
+QA Deployment: https://rec-qa.dokku-14.cs.ucsb.edu/
+
 Sprint Planning Doc for S25:
 * https://docs.google.com/document/d/1xM0llmGIZo3nh_wXUIBB0hMxVBKWV_vRMKd61w8nT-A/edit?usp=sharing
 
